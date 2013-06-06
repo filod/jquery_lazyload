@@ -86,7 +86,7 @@
         if (0 === settings.event.indexOf("scroll")) {
             $container.bind(settings.event, debounce(function(event) {
                 return update();
-            }), 200);
+            }, 200));
         }
 
         this.each(function() {
