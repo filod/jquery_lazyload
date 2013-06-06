@@ -14,7 +14,16 @@
  */
 (function($, window, document, undefined) {
     var $window = $(window);
-
+    function debounce(fn, delay) {
+      var timer = null;
+      return function () {
+        var context = this, args = arguments;
+        clearTimeout(timer);
+        timer = setTimeout(function () {
+          fn.apply(context, args);
+        }, delay);
+      };
+    }
     $.fn.lazyload = function(options) {
         var elements = this;
         var $container;
@@ -75,9 +84,9 @@
 
         /* Fire one scroll event per scroll. Not one scroll event per image. */
         if (0 === settings.event.indexOf("scroll")) {
-            $container.bind(settings.event, function(event) {
+            $container.bind(settings.event, debounce(function(event) {
                 return update();
-            });
+            }), 200);
         }
 
         this.each(function() {
@@ -119,11 +128,11 @@
             /* When wanted event is triggered load original image */
             /* by triggering appear.                              */
             if (0 !== settings.event.indexOf("scroll")) {
-                $self.bind(settings.event, function(event) {
+                $self.bind(settings.event, debounce(function(event) {
                     if (!self.loaded) {
                         $self.trigger("appear");
                     }
-                });
+                }, 200));
             }
         });
 
